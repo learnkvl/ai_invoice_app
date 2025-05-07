@@ -50,6 +50,14 @@ const emptyLineItem = {
   amount: 0
 };
 
+// Status options
+const statusOptions = [
+  { value: 'draft', label: 'Draft' },
+  { value: 'sent', label: 'Sent' },
+  { value: 'paid', label: 'Paid' },
+  { value: 'overdue', label: 'Overdue' },
+];
+
 // Mock clients data
 const clients = [
   { id: 1, name: 'Johnson & Partners LLP', email: 'billing@johnsonpartners.com' },
@@ -67,6 +75,7 @@ function InvoiceCreation() {
   const [invoiceNumber, setInvoiceNumber] = useState(`INV-${Date.now().toString().slice(-8)}`);
   const [invoiceDate, setInvoiceDate] = useState(new Date());
   const [dueDate, setDueDate] = useState(addDays(new Date(), 30));
+  const [status, setStatus] = useState('draft');
   const [lineItems, setLineItems] = useState([{ ...emptyLineItem }]);
   const [notes, setNotes] = useState('');
   const [termsAndConditions, setTermsAndConditions] = useState(
@@ -124,6 +133,7 @@ function InvoiceCreation() {
       invoiceNumber,
       invoiceDate,
       dueDate,
+      status,
       lineItems,
       subtotal,
       total,
@@ -143,6 +153,7 @@ function InvoiceCreation() {
       invoiceNumber,
       invoiceDate,
       dueDate,
+      status,
       lineItems,
       subtotal,
       total,
@@ -229,6 +240,22 @@ function InvoiceCreation() {
                             renderInput={(params) => <TextField {...params} fullWidth />}
                           />
                         </LocalizationProvider>
+                      </Grid>
+
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          select
+                          fullWidth
+                          label="Status"
+                          value={status}
+                          onChange={(e) => setStatus(e.target.value)}
+                        >
+                          {statusOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       </Grid>
                     </Grid>
                   </CardContent>
@@ -401,6 +428,10 @@ function InvoiceCreation() {
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                     <Typography variant="body2" color="text.secondary">Due Date:</Typography>
                     <Typography>{dueDate.toLocaleDateString()}</Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                    <Typography variant="body2" color="text.secondary">Status:</Typography>
+                    <Typography>{statusOptions.find(s => s.value === status)?.label || status}</Typography>
                   </Box>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                     <Typography variant="body2" color="text.secondary">Total Amount:</Typography>
